@@ -7,6 +7,6 @@ API_TOKEN = ' '
 bot = Bot(token=API_TOKEN)
 
 dp = Dispatcher(bot)
-
+dp = Dispatcher(bot)
 
 
