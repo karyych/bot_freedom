@@ -6,5 +6,6 @@ ticker_dict = {
     'MSFT': 'MSFT.US', 
     'Microsoft': 'MSFT.US',
     'apple': 'AAPL.US',
-    'aapl': 'AAPL.US'
+    'aapl': 'AAPL.US',
+    'EUR/KZT' : 'EUR/KZT'
 }
