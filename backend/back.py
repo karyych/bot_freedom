@@ -1,9 +1,12 @@
 import telebot
 import requests
 import json
+from dotenv import load_dotenv
+import os
 
 # Токен
-TOKEN = '6738973994:AAEucnyuxwgdbSQWGsIqpkyUXqW5r-aMai0'
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
 
 # Создаем экземпляр бота
 bot = telebot.TeleBot(TOKEN)
