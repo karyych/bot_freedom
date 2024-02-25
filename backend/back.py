@@ -1,14 +1,19 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ParseMode
-from aiogram import executor 
+import telebot
 
-API_TOKEN = ' '
+TOKEN = '6738973994:AAEucnyuxwgdbSQWGsIqpkyUXqW5r-aMai0'
 
-bot = Bot(token=API_TOKEN)
+# Экземпляр бота
+bot = telebot.TeleBot(TOKEN)
 
-dp = Dispatcher(bot)
-dp = Dispatcher(bot)
+# Обработчик команды /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Привет! Я бот. Как дела?")
 
+# Всё остальное просто возвращаем обратно
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
 
-
-#gooodddddd
+# Запуск
+bot.polling()
