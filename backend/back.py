@@ -32,32 +32,35 @@ def send_welcome(message):
 # Обработчик текстовых сообщений
 # Далее надо будет сделат кнопку валюты и выбор валют, а такая реализация канает на акции но нужен будет словарь, 
 # т.к. например CVX.US вводить не удобно, хочется вводить CVX, cvx, Chevron
+ticker_waiting = False  # Флаг для отслеживания ожидания ввода тикера
+
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
+    global ticker_waiting  # Объявляем использование глобальной переменной
     user_input = message.text.lower()
     
-    if user_input == 'запрос': 
+    if user_input == 'запрос':
+        ticker_waiting = True  # Устанавливаем флаг ожидания ввода тикера
         bot.send_message(message.chat.id, "Введите тикер:")
-
-    # Надо фиксить user_input != ticker_dict
-    elif user_input in ticker_dict:
-        currency_ticker = ticker_dict[user_input]
-        # Здесь могут быть дополнительные действия, связанные с выбранной валютой
-        bot.reply_to(message, f"Выбран тикер {currency_ticker}.")
+    
+    elif ticker_waiting:
+        ticker_waiting = False  # Сбрасываем флаг ожидания ввода тикера
+        # Обрабатываем введенный тикер
+        user_input_tic = message.text.upper()
+        handle_ticker(message, user_input_tic)
+    
     else:
         bot.reply_to(message, "Я не понимаю, что вы имеете в виду.")
 
 
-"""
 # Функция, добавляющая название тикера в строку REST запроса
-def handle_ticker(message):
-    ticker = message.text.upper() # Может и не надо, надо чекать 
-    response = send_rest_request(REST_API_URL.format(ticker))
+def handle_ticker(message, ticker):
+    response = send_rest_request(REST_API_URL.format(ticker_dict[ticker]))
     if response:
         data = json.loads(response)
         # Сюда надо выводить больше инфы (для этого добавляем параметры в API_REST_URL +bbp +ttp) 
-        bot.reply_to(message, result)
         result = "\n".join([f"{item['c']}: {item['ltp']:.2f}" for item in data]) 
+        bot.reply_to(message, result)
     else:
         bot.reply_to(message, "Ошибка при выполнении запроса.")
 
@@ -72,6 +75,6 @@ def send_rest_request(url):
             return None
     except Exception as e:
         return None
-"""
+
 # Запускаем бота
 bot.polling()
