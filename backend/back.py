@@ -9,7 +9,7 @@ TOKEN = '6738973994:AAEucnyuxwgdbSQWGsIqpkyUXqW5r-aMai0'
 bot = telebot.TeleBot(TOKEN)
 
 # после params можно тоже вделать форматирование {}, т.к. bbp отвечает только за текущую цену
-REST_API_URL = 'https://tradernet.kz/securities/export?params=bbp&tickers={}'
+REST_API_URL = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
 
 
 # /start
@@ -19,9 +19,11 @@ def send_welcome(message):
 
 
 # Обработчик текстовых сообщений
+# Далее надо будет сделат кнопку валюты и выбор валют, а такая реализация канает на акции но нужен будет словарь, 
+# т.к. например CVX.US вводить не удобно, хочется вводить CVX, cvx, Chevron
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
-    if message.text.lower() == 'запрос': # Далее надо будет сделат кнопку валюты и выбор валют, а такая реализация канает на акции
+    if message.text.lower() == 'запрос': 
         bot.send_message(message.chat.id, "Введите тикер:")
         bot.register_next_step_handler(message, handle_ticker)
     else:
@@ -34,8 +36,9 @@ def handle_ticker(message):
     response = send_rest_request(REST_API_URL.format(ticker))
     if response:
         data = json.loads(response)
-        result = "\n".join([f"{item['c']}: {item['bbp']:.2f}" for item in data])
+        # Сюда надо выводить больше инфы (для этого добавляем параметры в API_REST_URL +bbp +ttp) 
         bot.reply_to(message, result)
+        result = "\n".join([f"{item['c']}: {item['ltp']:.2f}" for item in data]) 
     else:
         bot.reply_to(message, "Ошибка при выполнении запроса.")
 
