@@ -16,6 +16,14 @@ bot = telebot.TeleBot(TOKEN)
 # после params можно тоже делать форматирование {}, т.к. bbp отвечает только за текущую цену
 REST_API_URL = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
 
+# /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    send_curr_options(message.chat.id)
+    bot.reply_to(message, "Привет! Выберите валюту:")
+
+
+
 def send_curr_options(chat_id):
     currencies = list(ticker_dict.keys())
     markup = types.ReplyKeyboardMarkup(row_width=2, one_time_keyboard=True)
@@ -23,32 +31,17 @@ def send_curr_options(chat_id):
     markup.add(*buttons)
     bot.send_message(chat_id, "Выберите валюту:", reply_markup=markup)
 
-# /start
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    send_curr_options(message.chat.id)
-    bot.reply_to(message, "Привет! Выберите валюту:")
 
 # Обработчик текстовых сообщений
 # Далее надо будет сделат кнопку валюты и выбор валют, а такая реализация канает на акции но нужен будет словарь, 
 # т.к. например CVX.US вводить не удобно, хочется вводить CVX, cvx, Chevron
-ticker_waiting = False  # Флаг для отслеживания ожидания ввода тикера
-
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
-    global ticker_waiting  # Объявляем использование глобальной переменной
     user_input = message.text.lower()
-    
     if user_input == 'запрос':
-        ticker_waiting = True  # Устанавливаем флаг ожидания ввода тикера
         bot.send_message(message.chat.id, "Введите тикер:")
-    
-    elif ticker_waiting:
-        ticker_waiting = False  # Сбрасываем флаг ожидания ввода тикера
-        # Обрабатываем введенный тикер
         user_input_tic = message.text.upper()
         handle_ticker(message, user_input_tic)
-    
     else:
         bot.reply_to(message, "Я не понимаю, что вы имеете в виду.")
 
