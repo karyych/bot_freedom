@@ -23,8 +23,6 @@ def send_curr_options(chat_id):
     markup.add(*buttons)
     bot.send_message(chat_id, "Выберите валюту:", reply_markup=markup)
 
-
-
 # /start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -40,18 +38,14 @@ def handle_message(message):
     
     if user_input == 'запрос': 
         bot.send_message(message.chat.id, "Введите тикер:")
-        bot.register_next_step_handler(message, handle_ticker)
+
+    # Надо фиксить user_input != ticker_dict
     elif user_input in ticker_dict:
         currency_ticker = ticker_dict[user_input]
         # Здесь могут быть дополнительные действия, связанные с выбранной валютой
         bot.reply_to(message, f"Выбран тикер {currency_ticker}.")
     else:
         bot.reply_to(message, "Я не понимаю, что вы имеете в виду.")
-
-def handle_ticker(message):
-    ticker = message.text.upper()
-    # Здесь могут быть дополнительные действия с введенным тикером
-    bot.reply_to(message, f"Введен тикер: {ticker}.")
 
 
 """
