@@ -1,1 +1,1 @@
-# bot_freedom
+https://t.me/FreedomTikersBot
