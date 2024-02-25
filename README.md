@@ -1,2 +1,1 @@
-# bot_freedom
-# Салам всем ГэнГерам
+https://t.me/FreedomTikersBot
