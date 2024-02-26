@@ -16,6 +16,7 @@ bot = telebot.TeleBot(TOKEN)
 # после params можно тоже делать форматирование {}, т.к. bbp отвечает только за текущую цену
 #REST_API_URL = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
 
+
 # Старт бота /start
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -31,6 +32,9 @@ def start(message):
     markup.add(stocks_button)
 
     bot.send_message(chat_id, "Выберите категорию:", reply_markup=markup)
+   
+   
+
 
 # Обработчик по условию выбора кнопки 
 @bot.callback_query_handler(func=lambda call: True)
@@ -45,6 +49,8 @@ def handle_callback(call):
         handle_stock(chat_id, stock)
     elif call.data == 'back':
         start(chat_id)
+
+
 
 # Функция для создания кнопок по валютам и кнопки в откат
 def send_currency_options(chat_id):
@@ -77,6 +83,7 @@ def handle_currency(message, currency):
         bot.reply_to(message, ticker_info)
     else:
         bot.reply_to(message, "Тикер не найден в словаре.")
+
 
 # Функция для обработки выбора акции
 def handle_stock(chat_id, stock):
