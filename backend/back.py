@@ -20,7 +20,7 @@ bot = telebot.TeleBot(TOKEN)
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.InlineKeyboardMarkup()
-
+    
     # Кнопка "Валюта"
     currency_button = types.InlineKeyboardButton("Валюта", callback_data='currency')
     markup.add(currency_button)
@@ -32,24 +32,52 @@ def start(message):
     bot.send_message(message.chat.id, "Выберите категорию:", reply_markup=markup)
 
 
+#обработчик на условие при выборе кнопки
+@bot.message_handler(func=lambda call: True)
+def handle_message(call):
+    if call.data == 'currency':
+        send_currency_options(call.message.chat.id)
+    elif call.data == 'stocks':
+        send_stocks_options(call.message.chat.id)
+    elif call.data == 'back':
+        start(call.message)
+  
+def send_currency_options(chat_id):
+    currencies = ['EUR', 'KZT', 'USD', 'RUB']
+    markup = types.InlineKeyboardMarkup()
+    #кнопка "BACK"
+    back_button = types.InlineKeyboardButton("назад", callback_data='back')
+    markup.add(back_button)
+    #кнопки валют 
+    buttons = [types.InlineKeyboardButton(currency, callback_data=currency) for currency in currencies]
+    markup.add(*buttons)
+    bot.send_message(chat_id, "Выберите валюту:", reply_markup=markup)
+
+#функция для отправки опций по акциям 
+def send_stocks_options(chat_id):
+    currencies = list(ticker_dict.keys())
+    markup = types.ReplyKeyboardMarkup()
+    #кнопка <<back>>
+    back_button = types.InlineKeyboardButton("Назад", callback_data='back')
+    markup.add(back_button)
+    #кнопки <<акций>>
+    buttons = [types.InlineKeyboardButton(currency, callback_data=currency) for currency in currencies]
+    markup.add(*buttons)
+    bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
+
+
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-    if call.message:
+    if call.data == 'back':
         if call.data == 'currency':
             send_currency_options(call.message.chat.id)
         elif call.data == 'stocks':
             send_stocks_options(call.message.chat.id)
 
-def send_currency_options(chat_id):
-    currencies = list(ticker_dict.keys())
-    markup = types.ReplyKeyboardMarkup(row_width=2, one_time_keyboard=True)
-    buttons = [types.KeyboardButton(currency[:5]) for currency in currencies]
-    markup.add(*buttons)
-    bot.send_message(chat_id, "Выберите валюту:", reply_markup=markup)
 
-def send_stocks_options(chat_id):
-    # Здесь вы можете добавить необходимую логику для опций по акциям
-    bot.send_message(chat_id, "Опции по акциям")
+
 """
 # Обработчик текстовых сообщений
 # Далее надо будет сделат кнопку валюты и выбор валют, а такая реализация канает на акции но нужен будет словарь, 
@@ -64,6 +92,7 @@ def handle_message(message):
     else:
         bot.reply_to(message, "Я не понимаю, что вы имеете в виду.")
 """
+"""
 @bot.message_handler(func=lambda message: message.text.isalpha())
 def handle_ticker_input(message):
     user_input_tic = message.text
@@ -72,6 +101,7 @@ def handle_ticker_input(message):
         handle_ticker(message, ticker_info)
     else:
         bot.send_message(message.chat.id, "Тикер не найден в словаре.")
+"""
 """
 # Функция, добавляющая название тикера в строку REST запроса
 def handle_ticker(message, ticker):
@@ -84,6 +114,7 @@ def handle_ticker(message, ticker):
     else:
         bot.reply_to(message, "Ошибка при выполнении запроса.")
 """ 
+"""
 def handle_ticker(message, ticker_info):
     response = send_rest_request(ticker_info['api'].format(ticker_info['ticker'].upper()))
     if response:
@@ -92,6 +123,7 @@ def handle_ticker(message, ticker_info):
         bot.reply_to(message, result)
     else:
         bot.reply_to(message, "Ошибка при выполнении запроса.")
+"""
 # Функция для отправки REST запроса
 def send_rest_request(url):
     try:
