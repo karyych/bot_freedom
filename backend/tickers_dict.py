@@ -1,11 +1,10 @@
 #Словарь для тикеров 
 
 ticker_dict = {
-    'CVX': 'CVX.US',
-    'CHEVRON': 'CVX.US',
-    'MSFT': 'MSFT.US', 
-    'Microsoft': 'MSFT.US',
-    'apple': 'AAPL.US',
-    'aapl': 'AAPL.US',
-    'EUR/KZT' : 'EUR/KZT'
+    'CVX': {'ticker': 'CVX.US', 'api': 'https://tradernet.kz/securities/export?params=ltp&tickers={}'},
+    'CHEVRON': {'ticker': 'CVX.US', 'api': 'https://tradernet.kz/securities/export?params=ltp&tickers={}'}, 
+    'Microsoft': {'ticker': 'MSFT.US', 'api': 'https://tradernet.kz/securities/export?params=ltp&tickers={}'},
+    'apple': {'ticker': 'AAPL.US', 'api': 'https://tradernet.kz/securities/export?params=ltp&tickers={}'},
+    'aapl': {'ticker': 'AAPL.US', 'api': 'https://tradernet.kz/securities/export?params=ltp&tickers={}'},
+
 }
