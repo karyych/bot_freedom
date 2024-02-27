@@ -43,9 +43,9 @@ def handle_callback(call):
     elif query == 'stocks':
         send_stocks_options(chat_id)
     elif query.startswith('stock_'):
-        handle_stock(chat_id, query.split('_')[1])
+        handle_selection(chat_id, query.split('_')[1])
     elif query.startswith('currency_'):
-        handle_currency(chat_id, query.split('_')[1])
+        handle_selection(chat_id, query.split('_')[1])
     elif query == 'back':
         start(call.message)
 
@@ -79,21 +79,15 @@ def send_stocks_options(chat_id):
     
     bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
 
-# Функция для обработки выбора валюты
-def handle_currency(chat_id, currency):
+# Функция для обработки выбора акции
+def handle_selection(chat_id, currency):
     ticker_info = get_ticker_info(currency)
     if ticker_info:
         bot.send_message(chat_id, ticker_info)
     else:
         bot.send_message(chat_id, "Тикер не найден в словаре.")
 
-# Функция для обработки выбора акции
-def handle_stock(chat_id, stock):
-    ticker_info = get_ticker_info(stock)
-    if ticker_info:
-        bot.send_message(chat_id, ticker_info)
-    else:
-        bot.send_message(chat_id, "Тикер не найден в словаре.")
+
 
 # Функция для получения информации о тикере
 def get_ticker_info(ticker):
