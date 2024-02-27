@@ -7,11 +7,15 @@
 REST_API_URL = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
 
 ticker_dict = {
-    'CVX': {'ticker': 'CVX.US'},
-    'CHEVRON': {'ticker': 'CVX.US'}, 
+    'Nvidia': {'ticker': 'NVDA.US'},
     'Microsoft': {'ticker': 'MSFT.US'},
-    'apple': {'ticker': 'AAPL.US'},
-    'aapl': {'ticker': 'AAPL.US'},
+    'Apple': {'ticker': 'AAPL.US'},
+    'Alphabet': {'ticker': 'GOOGL.US'}, 
+    'Amazon': {'ticker': 'AMZN.US'},
+    'Meta': {'ticker': 'META.US'},
+    'Tesla': {'ticker': 'TSLA.US'},
+
+    'Chevron': {'ticker': 'CVX.US'}, 
     'USD/KZT': {'ticker': 'USD/KZT'},
 
     

@@ -9,6 +9,7 @@ from telebot import types
 # Загрузка токена из переменных среды
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
+REST_API_URL = os.getenv("REST_API_URL")
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(TOKEN)
@@ -73,7 +74,7 @@ def send_stocks_options(chat_id):
     markup.add(back_button)
     
     # Добавление кнопок акций
-    buttons = [types.InlineKeyboardButton(stock, callback_data=f'stock_{stock}') for stock in stocks]
+    buttons = [types.InlineKeyboardButton(stock, callback_data=f'stock_{stock}') for stock in stocks[:7]]
     markup.add(*buttons)
     
     bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
@@ -97,7 +98,7 @@ def handle_stock(chat_id, stock):
 # Функция для получения информации о тикере
 def get_ticker_info(ticker):
     if ticker in ticker_dict:
-        api_url = ticker_dict[ticker]['api']
+        api_url = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
         response = send_rest_request(api_url.format(ticker_dict[ticker]['ticker']))
         if response:
             data = json.loads(response)
