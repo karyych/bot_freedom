@@ -6,84 +6,85 @@ import os
 from tickers_dict import ticker_dict
 from telebot import types
 
-# Токен
+# Загрузка токена из переменных среды
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
-# Создаем экземпляр бота
+# Создание экземпляра бота
 bot = telebot.TeleBot(TOKEN)
 
-# после params можно тоже делать форматирование {}, т.к. bbp отвечает только за текущую цену
-#REST_API_URL = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
 
 
-# Старт бота /start
+# Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def start(message):
     chat_id = message.chat.id
     markup = types.InlineKeyboardMarkup()
     
-    # Кнопка "Валюта"
+    # Добавление кнопки "Валюта"
     currency_button = types.InlineKeyboardButton("Валюта", callback_data='currency')
     markup.add(currency_button)
 
-    # Кнопка "Акции"
+    # Добавление кнопки "Акции"
     stocks_button = types.InlineKeyboardButton("Акции", callback_data='stocks')
     markup.add(stocks_button)
 
     bot.send_message(chat_id, "Выберите категорию:", reply_markup=markup)
-   
-   
 
-
-# Обработчик по условию выбора кнопки 
+# Обработчик callback-запросов
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
     chat_id = call.message.chat.id
-    if call.data == 'currency':
+    query = call.data
+    
+    if query == 'currency':
         send_currency_options(chat_id)
-    elif call.data == 'stocks':
+    elif query == 'stocks':
         send_stocks_options(chat_id)
-    elif call.data.startswith('stock_'):
-        stock = call.data.split('_')[1]
-        handle_stock(chat_id, stock)
-    elif call.data == 'back':
-        start(chat_id)
+    elif query.startswith('stock_'):
+        handle_stock(chat_id, query.split('_')[1])
+    elif query.startswith('currency_'):
+        handle_currency(chat_id, query.split('_')[1])
+    elif query == 'back':
+        start(call.message)
 
-
-
-# Функция для создания кнопок по валютам и кнопки в откат
+# Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
     currencies = ['EUR', 'KZT', 'USD', 'RUB']
     markup = types.InlineKeyboardMarkup()
-    # кнопка "BACK"
+    
+    # Добавление кнопки "Назад"
     back_button = types.InlineKeyboardButton("Назад", callback_data='back')
     markup.add(back_button)
-    # кнопки валют
+    
+    # Добавление кнопок валют
     buttons = [types.InlineKeyboardButton(currency, callback_data=f'currency_{currency}') for currency in currencies]
     markup.add(*buttons)
+    
     bot.send_message(chat_id, "Выберите валюту:", reply_markup=markup)
 
-#функция для отправки опций по акциям 
+# Функция для отправки кнопок с акциями
 def send_stocks_options(chat_id):
     stocks = list(ticker_dict.keys())
     markup = types.InlineKeyboardMarkup()
-    # кнопка <<back>>
+    
+    # Добавление кнопки "Назад"
     back_button = types.InlineKeyboardButton("Назад", callback_data='back')
     markup.add(back_button)
-    # кнопки <<акций>>
+    
+    # Добавление кнопок акций
     buttons = [types.InlineKeyboardButton(stock, callback_data=f'stock_{stock}') for stock in stocks]
     markup.add(*buttons)
+    
     bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
 
 # Функция для обработки выбора валюты
-def handle_currency(message, currency):
+def handle_currency(chat_id, currency):
     ticker_info = get_ticker_info(currency)
     if ticker_info:
-        bot.reply_to(message, ticker_info)
+        bot.send_message(chat_id, ticker_info)
     else:
-        bot.reply_to(message, "Тикер не найден в словаре.")
-
+        bot.send_message(chat_id, "Тикер не найден в словаре.")
 
 # Функция для обработки выбора акции
 def handle_stock(chat_id, stock):
@@ -100,12 +101,12 @@ def get_ticker_info(ticker):
         response = send_rest_request(api_url.format(ticker_dict[ticker]['ticker']))
         if response:
             data = json.loads(response)
-            # Форматирование данных по вашему усмотрению
-            result = "\n".join([f"{item['c']}: {item['ltp']:.2f}" for item in data]) 
+            # Форматирование данных
+            result = "\n".join([f"{item['c']}: {item['ltp']:.2f}" for item in data])
             return result
     return None 
 
-# Функция для проверки статуса и отправки REST запроса
+# Функция для отправки REST запроса
 def send_rest_request(url):
     try:
         response = requests.get(url)
@@ -116,21 +117,11 @@ def send_rest_request(url):
     except Exception as e:
         return None
 
-# Обработчик для Inline кнопок 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    if call.data == 'back':
-        send_stocks_options(call.message.chat.id)
-    elif call.data.startswith('currency_'):
-        currency = call.data.split('_')[1]
-        handle_currency(call, currency)
-    elif call.data.startswith('stocks_'):
-        stock = call.data.split('_')[1]
-        handle_stock(call, stock)
-
-
-# Запускаем бота
+# Запуск бота
 bot.polling(none_stop=True)
+
+
+
 
 """
 # Обработчик текстовых сообщений
