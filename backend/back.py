@@ -98,8 +98,8 @@ def handle_stock(chat_id, stock):
 # Функция для получения информации о тикере
 def get_ticker_info(ticker):
     if ticker in ticker_dict:
-        api_url = 'https://tradernet.kz/securities/export?params=ltp&tickers={}'
-        response = send_rest_request(api_url.format(ticker_dict[ticker]['ticker']))
+        api_url = REST_API_URL.format(ticker_dict[ticker]['ticker'])
+        response = send_rest_request(api_url)
         if response:
             data = json.loads(response)
             # Форматирование данных
