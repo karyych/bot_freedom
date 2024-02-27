@@ -15,7 +15,6 @@ REST_API_URL = os.getenv("REST_API_URL")
 bot = telebot.TeleBot(TOKEN)
 
 
-
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -48,6 +47,7 @@ def handle_callback(call):
         handle_selection(chat_id, query.split('_')[1])
     elif query == 'back':
         start(call.message)
+
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
@@ -86,8 +86,6 @@ def handle_selection(chat_id, currency):
         bot.send_message(chat_id, ticker_info)
     else:
         bot.send_message(chat_id, "Тикер не найден в словаре.")
-
-
 
 # Функция для получения информации о тикере
 def get_ticker_info(ticker):
