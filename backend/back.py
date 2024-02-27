@@ -52,7 +52,13 @@ def handle_callback(call):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_text(message):
     chat_id = message.chat.id
-    bot.send_message(chat_id, "Не понимаю о чем вы! Выберите действие.")
+    user_input = message.text.strip().upper() 
+    handle_selection(chat_id, user_input)
+
+  #  if user_input in ticker_dict: 
+  #     handle_selection(chat_id, user_input)
+  #  else:
+  #      bot.send_message(chat_id, "Не понимаю о чем вы! Выберите действие.")
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
