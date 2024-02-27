@@ -48,6 +48,11 @@ def handle_callback(call):
     elif query == 'back':
         start(call.message)
 
+# Обработчик для текстовых сообщений, не являющихся командами
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def handle_text(message):
+    chat_id = message.chat.id
+    bot.send_message(chat_id, "Не понимаю о чем вы! Выберите действие.")
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
