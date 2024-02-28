@@ -118,6 +118,7 @@ def get_ticker_info(ticker):
             print(f"Ошибка декодирования JSON: {response}")
     return None
 
+#функция для обработки валютных пар 
 def handle_custom_currency_pair(currency_pair):
     api_url = f"{REST_API_URL}/{currency_pair}"
     response = send_rest_request(api_url)
