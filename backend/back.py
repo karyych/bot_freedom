@@ -99,14 +99,10 @@ def get_ticker_info(ticker):
     if ticker in ticker_dict:
         api_url = REST_API_URL.format(ticker_dict[ticker]['ticker'])
         response = send_rest_request(api_url)
-        if response:
-            data = json.loads(response)
-            # Форматирование данных
-            result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
-            return result
     else:
         api_url = REST_API_URL.format(ticker)
         response = send_rest_request(api_url)
+
         if response != []:
             data = json.loads(response)
             # Форматирование данных
