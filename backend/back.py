@@ -102,14 +102,24 @@ def get_ticker_info(ticker):
     else:
         api_url = REST_API_URL.format(ticker)
         response = send_rest_request(api_url)
+    if response is not None:
+        try:
+            data = json.loads(response)  #конверт в json
+            if data:  #проверка наличия данных
+                result = "\n".join([
+                    f"{item.get('name', 'Название не найдено')} (Тикер: {item.get('c', 'Тикер не найден')}) "
+                    f"\nЦена последней сделки: {item.get('ltp', 0):.2f} $"
+                    for item in data
+                ])
+                return result
+        except json.JSONDecodeError:
+            print(f"Ошибка декодирования JSON: {response}")
+    return None
 
-    if response != []:
-        data = json.loads(response)
-        # Форматирование данных
-        result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
-        return result
-    else:
-        return None
+    
+
+        
+  
 
 # Функция для отправки REST запроса
 def send_rest_request(url):
