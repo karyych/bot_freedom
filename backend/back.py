@@ -115,13 +115,12 @@ def get_ticker_info(ticker):
 def send_rest_request(url):
     try:
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.text
-        else:
-            return None
-    except Exception as e:
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"Ошибка при выполнении запроса: {e}")
         return None
-
+    
 # Запуск бота
 bot.polling(none_stop=True)
 
