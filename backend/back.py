@@ -116,11 +116,26 @@ def get_ticker_info(ticker):
             print(f"Ошибка декодирования JSON: {response}")
     return None
 
+# Функция для получения информации о валютной пары
+def handle_custom_currency_pair(currency_pair):
+    api_url = f"{REST_API_URL}"
+    response = send_rest_request(api_url)
+
+    if response is not None:
+        try:
+            data = json.loads(response)
+            if data:
+                result = "\n".join([
+                    f"{item.get('name', 'Валютная пара')} (Пара: {item.get('c', currency_pair)}) "
+                    f"\nКурс валют: {item.get('ltp', 0):.2f} $"
+                    for item in data
+                ])
+                return result
+        except json.JSONDecodeError:
+            print(f"Ошибка декодирования JSON: {response}")
+    return None
+
     
-
-        
-  
-
 # Функция для отправки REST запроса
 def send_rest_request(url):
     try:

@@ -22,5 +22,8 @@ ticker_dict = {
     'EUR/RUB': {'ticker': 'EUR/RUR'},
     'RUB/KZT': {'ticker': 'RUR/KZT'},
 
-    
+    # Добавленные валютные пары
+    'USD/JPY': {'ticker': 'USD/JPY'},
+    'GBP/USD': {'ticker': 'GBP/USD'},
+    # Другие валютные пары, которые вы хотите включить
 }
