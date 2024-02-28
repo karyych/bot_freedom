@@ -104,7 +104,17 @@ def get_ticker_info(ticker):
             # Форматирование данных
             result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
             return result
-    return None 
+    else:
+        api_url = REST_API_URL.format(ticker)
+        response = send_rest_request(api_url)
+        if response != []:
+            data = json.loads(response)
+            # Форматирование данных
+            result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
+            return result
+        else:
+            # bot.send_message(chat_id, "Тикер не найден в словаре.")
+            return None
 
 # Функция для отправки REST запроса
 def send_rest_request(url):
