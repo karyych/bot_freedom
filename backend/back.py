@@ -62,7 +62,7 @@ def handle_text(message):
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
-    currencies = ['USD/KZT', 'EUR/KZT', 'USD/RUR', 'EUR/RUR', 'RUR/KZT']
+    currencies = ['USD/KZT', 'EUR/KZT', 'USD/RUB', 'EUR/RUB', 'RUB/KZT']
     markup = types.InlineKeyboardMarkup()
     
     # Добавление кнопки "Назад"
