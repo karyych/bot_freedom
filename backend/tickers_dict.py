@@ -11,15 +11,19 @@ ticker_dict = {
     'Tesla': {'ticker': 'TSLA.US'},
 
     # Остальные акции
-    'Chevron': {'ticker': 'CVX.US'}, 
+    'Chevron': {'ticker': 'CVX.US'},
+    'CVX.US': {'ticker': 'CVX.US'},  
 
 
     # Валюты
     'USD/KZT': {'ticker': 'USD/KZT'},
     'EUR/KZT': {'ticker': 'EUR/KZT'},
-    'USD/RUR': {'ticker': 'USD/RUR'},
-    'EUR/RUR': {'ticker': 'EUR/RUR'},
-    'RUR/KZT': {'ticker': 'RUR/KZT'},
+    'USD/RUB': {'ticker': 'USD/RUR'},
+    'EUR/RUB': {'ticker': 'EUR/RUR'},
+    'RUB/KZT': {'ticker': 'RUR/KZT'},
 
-    
+    # Добавленные валютные пары
+    'USD/JPY': {'ticker': 'USD/JPY'},
+    'GBP/USD': {'ticker': 'GBP/USD'},
+    # Другие валютные пары, которые вы хотите включить
 }

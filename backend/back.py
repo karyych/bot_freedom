@@ -48,21 +48,17 @@ def handle_callback(call):
     elif query == 'back':
         start(call.message)
 
-# Обработчик для текстовых сообщений, не являющихся командами
+# Обработчик пользоватеьского ввода
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_text(message):
     chat_id = message.chat.id
     user_input = message.text.strip().upper() 
-    handle_selection(chat_id, user_input)
 
-  #  if user_input in ticker_dict: 
-  #     handle_selection(chat_id, user_input)
-  #  else:
-  #      bot.send_message(chat_id, "Не понимаю о чем вы! Выберите действие.")
+    handle_selection(chat_id, user_input)
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
-    currencies = ['USD/KZT', 'EUR/KZT', 'USD/RUR', 'EUR/RUR', 'RUR/KZT']
+    currencies = ['USD/KZT', 'EUR/KZT', 'USD/RUB', 'EUR/RUB', 'RUB/KZT']
     markup = types.InlineKeyboardMarkup()
     
     # Добавление кнопки "Назад"
@@ -87,10 +83,10 @@ def send_stocks_options(chat_id):
     # Добавление кнопок акций
     buttons = [types.InlineKeyboardButton(stock, callback_data=f'stock_{stock}') for stock in stocks[:7]]
     markup.add(*buttons)
-    
+
     bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
 
-# Функция для обработки выбора акции
+# Функция для обработки пользовательского ввода
 def handle_selection(chat_id, currency):
     ticker_info = get_ticker_info(currency)
     if ticker_info:
@@ -103,24 +99,54 @@ def get_ticker_info(ticker):
     if ticker in ticker_dict:
         api_url = REST_API_URL.format(ticker_dict[ticker]['ticker'])
         response = send_rest_request(api_url)
-        if response:
+    else:
+        api_url = REST_API_URL.format(ticker)
+        response = send_rest_request(api_url)
+    if response is not None:
+        try:
+            data = json.loads(response)  #конверт в json
+            if data:  #проверка наличия данных
+                result = "\n".join([
+                    f"{item.get('name', 'Название не найдено')} (Тикер: {item.get('c', 'Тикер не найден')}) "
+                    f"\nЦена последней сделки: {item.get('ltp', 0):.2f} $"
+                    f"\nЛучший бид: {item.get('bbp', 0):.2f}"
+                    f"\nЛучшее предложение: {item.get('bap', 0):.2f}"
+                    for item in data
+                ])
+                return result
+        except json.JSONDecodeError:
+            print(f"Ошибка декодирования JSON: {response}")
+    return None
+
+#функция для обработки валютных пар 
+def handle_custom_currency_pair(currency_pair):
+    api_url = f"{REST_API_URL}/{currency_pair}"
+    response = send_rest_request(api_url)
+
+    if response is not None:
+        try:
             data = json.loads(response)
-            # Форматирование данных
-            result = "\n".join([f"{item['c']}: {item['ltp']:.2f}" for item in data])
-            return result
-    return None 
+            if data:
+                result = "\n".join([
+                    f"{item.get('name', 'Валютная пара')} (Пара: {item.get('c', currency_pair)}) "
+                    f"\nКурс валют: {item.get('ltp', 0):.2f} $"
+                    for item in data
+                ])
+                return result
+        except json.JSONDecodeError:
+            print(f"Ошибка декодирования JSON: {response}")
+    return get_ticker_info(currency_pair)  # Если введена не валютная пара, а тикер, используем функцию для тикеров
 
 # Функция для отправки REST запроса
 def send_rest_request(url):
     try:
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.text
-        else:
-            return None
-    except Exception as e:
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"Ошибка при выполнении запроса: {e}")
         return None
-
+    
 # Запуск бота
 bot.polling(none_stop=True)
 
