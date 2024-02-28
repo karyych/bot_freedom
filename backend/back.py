@@ -103,13 +103,13 @@ def get_ticker_info(ticker):
         api_url = REST_API_URL.format(ticker)
         response = send_rest_request(api_url)
 
-        if response != []:
-            data = json.loads(response)
-            # Форматирование данных
-            result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
-            return result
-        else:
-            return None
+    if response != []:
+        data = json.loads(response)
+        # Форматирование данных
+        result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
+        return result
+    else:
+        return None
 
 # Функция для отправки REST запроса
 def send_rest_request(url):
