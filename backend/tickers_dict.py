@@ -18,9 +18,9 @@ ticker_dict = {
     # Валюты
     'USD/KZT': {'ticker': 'USD/KZT'},
     'EUR/KZT': {'ticker': 'EUR/KZT'},
-    'USD/RUR': {'ticker': 'USD/RUR'},
-    'EUR/RUR': {'ticker': 'EUR/RUR'},
-    'RUR/KZT': {'ticker': 'RUR/KZT'},
+    'USD/RUB': {'ticker': 'USD/RUR'},
+    'EUR/RUB': {'ticker': 'EUR/RUR'},
+    'RUB/KZT': {'ticker': 'RUR/KZT'},
 
     
 }

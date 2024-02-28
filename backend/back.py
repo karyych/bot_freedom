@@ -54,15 +54,7 @@ def handle_text(message):
     chat_id = message.chat.id
     user_input = message.text.strip().upper() 
 
-    # Для отладки
-    bot.send_message(chat_id, user_input)
-
     handle_selection(chat_id, user_input)
-
-  #  if user_input in ticker_dict: 
-  #     handle_selection(chat_id, user_input)
-  #  else:
-  #      bot.send_message(chat_id, "Не понимаю о чем вы! Выберите действие.")
 
 # Функция для отправки кнопок с валютами
 def send_currency_options(chat_id):
