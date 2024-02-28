@@ -109,6 +109,8 @@ def get_ticker_info(ticker):
                 result = "\n".join([
                     f"{item.get('name', 'Название не найдено')} (Тикер: {item.get('c', 'Тикер не найден')}) "
                     f"\nЦена последней сделки: {item.get('ltp', 0):.2f} $"
+                    f"\nЛучший бид: {item.get('bbp', 0):.2f}"
+                    f"\nЛучшее предложение: {item.get('bap', 0):.2f}"
                     for item in data
                 ])
                 return result
@@ -116,9 +118,8 @@ def get_ticker_info(ticker):
             print(f"Ошибка декодирования JSON: {response}")
     return None
 
-# Функция для получения информации о валютной пары
 def handle_custom_currency_pair(currency_pair):
-    api_url = f"{REST_API_URL}"
+    api_url = f"{REST_API_URL}/{currency_pair}"
     response = send_rest_request(api_url)
 
     if response is not None:
@@ -133,9 +134,8 @@ def handle_custom_currency_pair(currency_pair):
                 return result
         except json.JSONDecodeError:
             print(f"Ошибка декодирования JSON: {response}")
-    return None
+    return get_ticker_info(currency_pair)  # Если введена не валютная пара, а тикер, используем функцию для тикеров
 
-    
 # Функция для отправки REST запроса
 def send_rest_request(url):
     try:
