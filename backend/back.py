@@ -53,6 +53,10 @@ def handle_callback(call):
 def handle_text(message):
     chat_id = message.chat.id
     user_input = message.text.strip().upper() 
+
+    # Для отладки
+    bot.send_message(chat_id, user_input)
+
     handle_selection(chat_id, user_input)
 
   #  if user_input in ticker_dict: 
@@ -87,10 +91,10 @@ def send_stocks_options(chat_id):
     # Добавление кнопок акций
     buttons = [types.InlineKeyboardButton(stock, callback_data=f'stock_{stock}') for stock in stocks[:7]]
     markup.add(*buttons)
-    
+
     bot.send_message(chat_id, "Выберите акцию:", reply_markup=markup)
 
-# Функция для обработки выбора акции
+# Функция для обработки пользовательского ввода
 def handle_selection(chat_id, currency):
     ticker_info = get_ticker_info(currency)
     if ticker_info:

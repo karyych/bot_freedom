@@ -11,7 +11,8 @@ ticker_dict = {
     'Tesla': {'ticker': 'TSLA.US'},
 
     # Остальные акции
-    'Chevron': {'ticker': 'CVX.US'}, 
+    'Chevron': {'ticker': 'CVX.US'},
+    'CVX.US': {'ticker': 'CVX.US'},  
 
 
     # Валюты
