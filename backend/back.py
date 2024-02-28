@@ -48,7 +48,7 @@ def handle_callback(call):
     elif query == 'back':
         start(call.message)
 
-# Обработчик для текстовых сообщений, не являющихся командами
+# Обработчик пользоватеьского ввода
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_text(message):
     chat_id = message.chat.id
@@ -113,7 +113,6 @@ def get_ticker_info(ticker):
             result = "\n".join([f"{item['name']} (Тикер: {item['c']}) \nЦена последней сделки: {item['ltp']:.2f} $" for item in data])
             return result
         else:
-            # bot.send_message(chat_id, "Тикер не найден в словаре.")
             return None
 
 # Функция для отправки REST запроса
